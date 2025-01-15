@@ -6,7 +6,7 @@
 
 ## ERD
 
-![ERD diagram of the project](public\erd.png)
+![ERD diagram of the project](./public/erd.png)
 
 ## Wire Frames
 

@@ -1,12 +1,40 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+import requests
+from django.http import JsonResponse
+
+
+
 # Create your views here.
 
 def home(request):
     return render(request,'home.html')
 def about(request):
     return render(request,'about.html')
+
+def get_movie(request, movie):
+    url = f'https://api.themoviedb.org/3/movie/{movie}?api_key=API_KEY'
+    response = request.get(url)
+    data = response.json()
+    return JsonResponse(data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def signup(request):

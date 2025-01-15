@@ -5,7 +5,7 @@
 ## Project Description
 
 ## ERD
-![ERD diagram of the project](public\ERD.png)
+![ERD diagram of the project](public\erd.png)
 
 ## Wire Frames
 

@@ -30,6 +30,9 @@
             </li>
             {% if user.is_authenticated %}
             <li>
+              <a href="{% url 'profile'%}"></a>
+            </li>
+            <li>
               <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
                 <button type="submit">Log Out</button>

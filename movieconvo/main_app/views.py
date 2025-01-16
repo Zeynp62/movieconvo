@@ -6,8 +6,13 @@ import requests
 from django.http import JsonResponse
 
 
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+
+@login_required
+def profile(request):
+    return render(request, 'profile.html')
 
 def home(request):
     return render(request,'home.html')
@@ -19,22 +24,6 @@ def get_movie(request, movie):
     response = request.get(url)
     data = response.json()
     return JsonResponse(data)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def signup(request):

@@ -15,7 +15,7 @@
   </head>
   <body>
     <header class="navbar-fixed">
-      <nav style="background-color: rgb(200, 127, 71)">
+      <nav style="background-color: lightcoral">
         <div class="nav-wrapper">
           <ul>
             <li>
@@ -30,7 +30,7 @@
             </li>
             {% if user.is_authenticated %}
             <li>
-              <a href="{% url 'profile'%}"></a>
+              
             </li>
             <li>
               <form action="{% url 'logout' %}" method="post">

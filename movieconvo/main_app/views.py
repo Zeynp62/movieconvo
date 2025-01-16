@@ -2,10 +2,12 @@ from .models import Movie, Genre
 from django.shortcuts import render,redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Profile
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView
 from django.http import JsonResponse
-<<<<<<< HEAD
 GENRE_MAPPING = {
     28: 'Action',
     12: 'Adventure',
@@ -27,11 +29,6 @@ GENRE_MAPPING = {
     10752: 'War',
     37: 'Western'
 }
-=======
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Profile
-
 
 
 class ProfileCreate(LoginRequiredMixin, CreateView):
@@ -41,15 +38,22 @@ class ProfileCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
     
-class ProfileUpdate(LoginRequiredMixin, UpdateView):
+    
+
+    
+class ProfileUpdate(LoginRequiredMixin, UpdateView,):
     model = Profile
     fields = ['avatar', 'bio']
+    success_url = '/about/'
+
+    def get_object(self):
+        # Fetch the Profile object for the user
+        return Profile.objects.get(user__id=self.kwargs['user_id'])
 
 
 class ProfileDetail(LoginRequiredMixin, DetailView):
     model = Profile
 
->>>>>>> 37d605edcaa362ec7e17801a8cc39743610efe26
 # Create your views here.
 
 @login_required
@@ -70,8 +74,6 @@ def get_movies(requests, movie_id):
     url = f'https://api.themoviedb.org/3/trending/movie/day?api_key=API_KEY'
     response = requests.get(url)
     data = response.json()
-<<<<<<< HEAD
-
     title=data.get('title')
     description=data.get('overview')
     year=data.get('release_date')
@@ -103,9 +105,6 @@ def get_movies(requests, movie_id):
     movie.genre.set(genre_objects)
 
     return JsonResponse(data, {'movie_id': movie_id})
-=======
-    return JsonResponse(data)
->>>>>>> 37d605edcaa362ec7e17801a8cc39743610efe26
 
 
 def signup(request):
@@ -115,9 +114,12 @@ def signup(request):
         if form.is_valid():
             user=form.save()
             login(request,user)#to login the user directly after signing up
-            return redirect('index')
+            return redirect('profile_update', user_id=user.id)
+        
         else:
             error_message='Invalid Sign-up please try again later'
+        
+        success_url = '/profile/<int:pk>/update/'
     form = UserCreationForm()
     context={'form':form,'error_message':error_message}
     return render(request,'registration/signup.html',context)

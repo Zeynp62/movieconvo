@@ -4,9 +4,21 @@ from django.contrib.auth import login
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 import requests
 from django.http import JsonResponse
-
-
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Profile
+
+
+
+class ProfileCreate(LoginRequiredMixin, CreateView):
+    model = Profile
+    fields = ['avatar', 'bio']
+    def form_valid (self,form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+
+
 
 # Create your views here.
 

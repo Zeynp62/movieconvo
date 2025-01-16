@@ -51,6 +51,7 @@ class ProfileUpdate(LoginRequiredMixin, UpdateView,):
         # Fetch the Profile object for the user
         return Profile.objects.get(user__id=self.kwargs['user_id'])
     
+    
     def get_success_url(self):
         return reverse('profile_detail', kwargs={'user_id': self.object.user.id})
 

@@ -7,6 +7,7 @@ import requests
 from django.http import JsonResponse
 
 
+<<<<<<< HEAD
 GENRE_MAPPING = {
     28: 'Action',
     12: 'Adventure',
@@ -28,7 +29,15 @@ GENRE_MAPPING = {
     10752: 'War',
     37: 'Western'
 }
+=======
+from django.contrib.auth.decorators import login_required
+
+>>>>>>> 37d605edcaa362ec7e17801a8cc39743610efe26
 # Create your views here.
+
+@login_required
+def profile(request):
+    return render(request, 'profile.html')
 
 def home(request):
     return render(request,'home.html')
@@ -44,6 +53,7 @@ def get_movies(requests, movie_id):
     url = f'https://api.themoviedb.org/3/trending/movie/day?api_key=API_KEY'
     response = requests.get(url)
     data = response.json()
+<<<<<<< HEAD
 
     title=data.get('title')
     description=data.get('overview')
@@ -76,6 +86,9 @@ def get_movies(requests, movie_id):
     movie.genre.set(genre_objects)
 
     return JsonResponse(data, {'movie_id': movie_id})
+=======
+    return JsonResponse(data)
+>>>>>>> 37d605edcaa362ec7e17801a8cc39743610efe26
 
 
 def signup(request):

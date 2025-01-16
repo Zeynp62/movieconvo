@@ -33,7 +33,7 @@ def signup(request):
         if form.is_valid():
             user=form.save()
             login(request,user)#to login the user directly after signing up
-            return redirect('index')
+            return redirect('profile_update')
         else:
             error_message='Invalid Sign-up please try again later.'
     form = UserCreationForm()

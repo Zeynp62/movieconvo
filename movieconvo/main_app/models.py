@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 RATINGS = (
     ('N', 'Not Rated'),
     ('PG', 'Parental Guide'),
-    ('PG13','Parental Guide-13'),
     ('R', 'Rated R')
 )
 

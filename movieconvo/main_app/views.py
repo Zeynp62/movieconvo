@@ -8,6 +8,7 @@ from .models import Profile
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView
 from django.http import JsonResponse
+from django.urls import reverse
 GENRE_MAPPING = {
     28: 'Action',
     12: 'Adventure',
@@ -44,15 +45,21 @@ class ProfileCreate(LoginRequiredMixin, CreateView):
 class ProfileUpdate(LoginRequiredMixin, UpdateView,):
     model = Profile
     fields = ['avatar', 'bio']
-    success_url = '/about/'
+    
 
     def get_object(self):
         # Fetch the Profile object for the user
         return Profile.objects.get(user__id=self.kwargs['user_id'])
+    
+    def get_success_url(self):
+        return reverse('profile_detail', kwargs={'user_id': self.object.user.id})
 
 
 class ProfileDetail(LoginRequiredMixin, DetailView):
     model = Profile
+
+    def get_object(self):
+        return Profile.objects.get(user__id=self.kwargs['user_id'])
 
 # Create your views here.
 

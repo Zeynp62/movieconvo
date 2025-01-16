@@ -9,5 +9,4 @@ urlpatterns=[
     path('get_movie/<str:movie>/', views.get_movie, name='get_movies'), #i might change this 
     path('accounts/signup/',views.signup,name='signup'),
     path('profile/', profile, name='profile'),
-    
 ]

@@ -23,10 +23,10 @@ class Movie(models.Model):
     genre=models.ManyToManyField(Genre)
     rating= models.CharField(max_length=5,choices=RATINGS, default=RATINGS [0][0])
     description=models.TextField(max_length=1000)
-    year = models.PositiveIntegerField()
+    year = models.PositiveIntegerField(default=1999)
     poster = models.URLField(default='images/default.jpg')
     trailer = models.URLField(blank=True)
-    user=models.ForeignKey(User, on_delete=models.CASCADE)
+    user=models.ForeignKey(User, on_delete=models.CASCADE,default=1)
 
     def __str__(self):
         return self.title

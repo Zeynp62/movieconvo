@@ -3,7 +3,6 @@
 <div class="movie-container">
   {% for movie in display_movie %}
   <div class="movie">
-    <a href="{% url 'get_movies' movie_id=movie.id %}">
       <img
         src="{{ movie.poster }}"
         alt="{{ movie.title }} Poster"

@@ -5,13 +5,12 @@ from django.contrib.auth.models import User
 RATINGS = (
     ('N', 'Not Rated'),
     ('PG', 'Parental Guide'),
-    ('PG13','Parental Guide-13'),
     ('R', 'Rated R')
 )
 
 # Create your models here.
 class Genre(models.Model):
-    gid=models.IntegerField(max_length=60)
+    gid=models.IntegerField()
     name=models.CharField(max_length=50)
     def __str__(self):
         return self.name

@@ -2,16 +2,16 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+
 RATINGS = (
     ('N', 'Not Rated'),
     ('PG', 'Parental Guide'),
-    ('PG13','Parental Guide-13'),
     ('R', 'Rated R')
 )
 
 # Create your models here.
 class Genre(models.Model):
-    gid=models.IntegerField(max_length=60)
+    gid=models.IntegerField()
     name=models.CharField(max_length=50)
     def __str__(self):
         return self.name
@@ -49,18 +49,9 @@ class Review(models.Model):
         return reverse('reviews_detail', kwargs={'reviews_id': self.id})
     review=models.TextField(max_length=500)
 
-
-
-
-
-
-
-from django.contrib.auth.models import User
-
-# Create your models here.
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
+    avatar = models.ImageField(default='', upload_to='main_app/static/profile_images')
     bio = models.TextField()
 
     def __str__(self):

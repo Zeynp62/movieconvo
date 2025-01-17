@@ -9,6 +9,12 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView
 from django.http import JsonResponse
 from django.urls import reverse
+import os 
+from dotenv import load_dotenv
+load_dotenv()
+
+KEY=os.getenv('API_KEY')
+
 GENRE_MAPPING = {
     28: 'Action',
     12: 'Adventure',
@@ -62,8 +68,6 @@ class ProfileDetail(LoginRequiredMixin, DetailView):
     def get_object(self):
         return Profile.objects.get(user__id=self.kwargs['user_id'])
 
-# Create your views here.
-
 @login_required
 def profile(request):
     return render(request, 'profile.html')
@@ -72,48 +76,47 @@ def home(request):
     return render(request,'home.html')
 def about(request):
     return render(request,'about.html')
-#get all the movies from the database and display them
+
 def movies(request):
     display_movie= Movie.objects.all()
-    return render(request, 'all_movies.html', {'display_movie':display_movie})
+    
 
-# #to get the movies from the api and adds to the database....
-def get_movies(requests, movie_id):
-    url = f'https://api.themoviedb.org/3/trending/movie/day?api_key=API_KEY'
+    url = f'https://api.themoviedb.org/3/trending/movie/day?api_key={KEY}'
     response = requests.get(url)
     data = response.json()
-    title=data.get('title')
-    description=data.get('overview')
-    year=data.get('release_date')
-    poster = f"https://image.tmdb.org/t/p/original{data.get('poster_path')}"
-    trailer = ""
-    if 'videos' in data and len(data['videos']['results']) > 0:
-        trailer = f"https://www.youtube.com/embed/{data['videos']['results'][0]['key']}"
-    rating = 'N'  # Default to 'Not Rated'
-    if 'adult' in data:
-        rating = 'R' if data['adult'] else 'PG' 
+    api_data_objects = [
+        Movie(
+            title=item.get('title'),
+            # genre=item.get('genre_ids',[]),
+            rating=item.get('adult'),
+            description=item.get('overview'),
+            poster=item.get('poster_path'),
+            trailer=item.get('video'),
+        )
+        for item in data['results']
+    ]
+    Movie.objects.bulk_create(api_data_objects)
+
+    return render(request, 'all_movies.html', {'display_movie':display_movie})
     
-    movie = Movie.objects.update_or_create(title=title, defaults={
-        'description': description,
-        'year': year,
-        'poster': poster,
-        'trailer': trailer,
-        'rating': rating,
-    })
+    #  def form_valid(self, form):
+    #     form.instance.user= self.request.user
+    #     return super().form_valid(form)
 
-    genre_ids = data.get('genre_ids',[])
-    genre_objects = []
 
-    for genre_id in genre_ids:
-        genre_name = GENRE_MAPPING(genre_id)
-        if genre_name:
-            genre_obj = Genre.objects.get_or_create(name=genre_name)
-            genre_objects.append(genre_obj)
 
-    movie.genre.set(genre_objects)
 
-    return JsonResponse(data, {'movie_id': movie_id})
+# genre_ids = data.get('genre_ids',[])
+# genre_objects = []
 
+# for genre_id in genre_ids:
+#     genre_name = GENRE_MAPPING(genre_id)
+#     if genre_name:
+#             genre_obj = Genre.objects.get_or_create(name=genre_name)
+#             genre_objects.append(genre_obj)
+
+#     movie.genre.set(genre_objects)
+    # return JsonResponse(data)
 
 def signup(request):
     error_message=''

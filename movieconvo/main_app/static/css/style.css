@@ -15,3 +15,45 @@ footer.page-footer {
 .nav-color {
   background-color: rgb(105, 143, 79);
 }
+
+.movie-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.movie {
+  background-color: #ffffff; /* White background for the card */
+  border: 1px solid #ddd; /* Light gray border */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  width: 200px; /* Set a fixed width for each card */
+  text-align: center; /* Center align text */
+  padding: 15px; /* Inner padding for the card content */
+  transition: transform 0.2s, box-shadow 0.2s; /* Smooth hover effect */
+}
+
+.movie:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+}
+
+.movie-poster {
+  width: 100%; /* Make the poster image responsive */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 4px; /* Slightly rounded corners for the image */
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333; /* Darker text for better readability */
+}
+
+h2 {
+  font-size: 1.2em;
+  margin-top: 10px;
+  color: #444; /* Subtle color for titles */
+}

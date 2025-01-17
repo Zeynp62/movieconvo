@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 import os 
+import requests
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -121,7 +122,7 @@ def movies(request):
 
 
 
-# #to get the movies from the api and adds to the database....
+#to get the movies from the api and adds to the database....
 # def get_movies(requests):
 #     url = f'https://api.themoviedb.org/3/trending/movie/day?api_key={KEY}'
 #     response = requests.get(url)

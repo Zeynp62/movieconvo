@@ -45,6 +45,15 @@ def home(request):
 def about(request):
     return render(request,'about.html')
 
+
+# def process_movies(api_response):
+#     base_url = "https://image.tmdb.org/t/p/original/"
+#     for movie in api_response.get("results", []):
+#         if "poster_path" in movie and movie["poster_path"]:
+#             movie["poster_url"] = f"{base_url}{movie['poster_path'].lstrip('/')}"
+#             print(f"Poster URL generated: {movie['poster_url']}")
+#     return api_response
+
 #get all the movies from the database and display them
 def movies(request):
     display_movie= Movie.objects.all()
@@ -54,7 +63,7 @@ def movies(request):
     response = requests.get(url)
     data = response.json()
 
-  
+    # base_url = "https://image.tmdb.org/t/p/original/"
     
     api_data_objects = [
         Movie(
@@ -67,57 +76,19 @@ def movies(request):
         )
         for item in data['results']
     ]
-    print("hi",api_data_objects)
+    # print("hi",api_data_objects)
     Movie.objects.bulk_create(api_data_objects)
 
     return render(request, 'all_movies.html', {'display_movie':display_movie})
     
+
+
     #  def form_valid(self, form):
     #     form.instance.user= self.request.user
     #     return super().form_valid(form)
 
 
 
-# #to get the movies from the api and adds to the database....
-# def get_movies(requests):
-#     url = f'https://api.themoviedb.org/3/trending/movie/day?api_key={KEY}'
-#     response = requests.get(url)
-#     data = response.json()
-    
-#     api_data_objects = [
-#         Movie(
-#             title=item.get('title'),
-#             genre=item.get('genre_ids',[]),
-#             rating=item.get('adult'),
-#             description=item.get('overview'),
-#             poster=item.get('poster_path'),
-#             trailer=item.get('video'),
-#         )
-#         for item in data['results']
-#     ]
-#     print("hi",api_data_objects)
-#     Movie.objects.bulk_create(api_data_objects)
-
-
-
-    # title=data.get('title')
-    # description=data.get('overview')
-    # year=data.get('release_date')
-    # poster = data.get('poster_path')
-    # trailer = ""
-    # if 'videos' in data and len(data['videos']['results']) > 0:
-    #     trailer = f"https://www.youtube.com/embed/{data['videos']['results'][0]['key']}"
-    # rating = 'N'  
-    # if 'adult' in data:
-    #     rating = 'R' if data['adult'] else 'PG' 
-    
-    # movie = Movie.objects.update_or_create(title=title, defaults={
-    #     'description': description,
-    #     'year': year,
-    #     'poster': poster,
-    #     'trailer': trailer,
-    #     'rating': rating,
-    # })
 
 # genre_ids = data.get('genre_ids',[])
 # genre_objects = []

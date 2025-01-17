@@ -1,17 +1,19 @@
 {% extends 'base.html' %} {% block content %}
+
 <h1>ALL MOVIES</h1>
 <div class="movie-container">
   {% for movie in display_movie %}
-  <div class="movie">
-    <a href="{% url 'get_movies' movie_id=movie.id %}">
-      <img
-        src="{{ movie.poster }}"
-        alt="{{ movie.title }} Poster"
-        class="movie-poster"
-      />
+  <div class="card">
+    <div class="card-content">
       <h2>{{ movie.title }}</h2>
-    </a>
+      <img
+        src="https://image.tmdb.org/t/p/original{{ movie.poster }}"
+        alt="{{ movie.title }} poster"
+        width="400px"
+        height="300px"
+      />
+    </div>
   </div>
   {% endfor %}
 </div>
-{%endblock%}
+{% endblock %}

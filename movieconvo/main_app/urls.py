@@ -7,6 +7,8 @@ urlpatterns=[
     path('about/',views.about,name='about'),
     path('accounts/signup/',views.signup,name='signup'),
     path('movies/', views.movies, name='movies'),
+    # path('movies/<int:movie_id>/', views.movie_detail, name='detail') ,
+
     # path('movies/', views.get_movies, name='get_movies'), #i might change this 
     path('accounts/signup/',views.signup,name='signup'),
     path('profile/', profile, name='profile'),

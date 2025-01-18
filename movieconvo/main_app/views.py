@@ -2,11 +2,13 @@ from .models import Movie, Genre
 from django.shortcuts import render,redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic import ListView, DetailView 
-import requests
-from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Profile
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView
+from django.http import JsonResponse
+from django.urls import reverse
 import os 
 from dotenv import load_dotenv
 load_dotenv()
@@ -35,7 +37,36 @@ GENRE_MAPPING = {
     37: 'Western'
 }
 
-# Create your views here.
+
+class ProfileCreate(LoginRequiredMixin, CreateView):
+    model = Profile
+    fields = ['avatar', 'bio']
+    def form_valid (self,form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+    
+    
+
+    
+class ProfileUpdate(LoginRequiredMixin, UpdateView,):
+    model = Profile
+    fields = ['avatar', 'bio']
+    
+
+    def get_object(self):
+        # Fetch the Profile object for the user
+        return Profile.objects.get(user__id=self.kwargs['user_id'])
+    
+    
+    def get_success_url(self):
+        return reverse('profile_detail', kwargs={'user_id': self.object.user.id})
+
+
+class ProfileDetail(LoginRequiredMixin, DetailView):
+    model = Profile
+
+    def get_object(self):
+        return Profile.objects.get(user__id=self.kwargs['user_id'])
 
 @login_required
 def profile(request):
@@ -46,16 +77,6 @@ def home(request):
 def about(request):
     return render(request,'about.html')
 
-
-# def process_movies(api_response):
-#     base_url = "https://image.tmdb.org/t/p/original/"
-#     for movie in api_response.get("results", []):
-#         if "poster_path" in movie and movie["poster_path"]:
-#             movie["poster_url"] = f"{base_url}{movie['poster_path'].lstrip('/')}"
-#             print(f"Poster URL generated: {movie['poster_url']}")
-#     return api_response
-
-#get all the movies from the database and display them
 def movies(request):
     display_movie= Movie.objects.all()
     
@@ -63,9 +84,6 @@ def movies(request):
     url = f'https://api.themoviedb.org/3/trending/movie/day?api_key={KEY}'
     response = requests.get(url)
     data = response.json()
-
-    # base_url = "https://image.tmdb.org/t/p/original/"
-    
     api_data_objects = [
         Movie(
             title=item.get('title'),
@@ -77,13 +95,10 @@ def movies(request):
         )
         for item in data['results']
     ]
-    # print("hi",api_data_objects)
     Movie.objects.bulk_create(api_data_objects)
 
     return render(request, 'all_movies.html', {'display_movie':display_movie})
     
-
-
     #  def form_valid(self, form):
     #     form.instance.user= self.request.user
     #     return super().form_valid(form)
@@ -101,7 +116,6 @@ def movies(request):
 #             genre_objects.append(genre_obj)
 
 #     movie.genre.set(genre_objects)
-
     # return JsonResponse(data)
 
 def signup(request):
@@ -111,9 +125,12 @@ def signup(request):
         if form.is_valid():
             user=form.save()
             login(request,user)#to login the user directly after signing up
-            return redirect('index')
+            return redirect('profile_update', user_id=user.id)
+        
         else:
             error_message='Invalid Sign-up please try again later'
+        
+        success_url = '/profile/<int:pk>/update/'
     form = UserCreationForm()
     context={'form':form,'error_message':error_message}
     return render(request,'registration/signup.html',context)

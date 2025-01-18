@@ -6,11 +6,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Profile
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 from django.http import JsonResponse
 from django.urls import reverse
 import requests
-from django.db import transaction
+# from django.db import transaction
 import os 
 from dotenv import load_dotenv
 load_dotenv()
@@ -70,22 +70,15 @@ class ProfileDetail(LoginRequiredMixin, DetailView):
     def get_object(self):
         return Profile.objects.get(user__id=self.kwargs['user_id'])
 
-class GenreList(LoginRequiredMixin, ListView):
-    model = Genre
-    # template_name = 'genres_list.html'
-    context_object_name = 'genres'
+# class GenreList(LoginRequiredMixin, ListView):
+#     model = Genre
+#     # template_name = 'genres_list.html'
+#     context_object_name = 'genres'
 
 # class MovieList(LoginRequiredMixin, ListView):
 #     model = Movie
 #     template_name = 'movies_list.html'
 #     context_object_name = 'movies'
-
-class MovieDetail(LoginRequiredMixin, DetailView):
-    model = Movie
-    template_name = 'movie_detail.html'
-    context_object_name = 'movie'
-
-
 
 
 @login_required
@@ -104,9 +97,9 @@ def movies(request):
     url = f'https://api.themoviedb.org/3/trending/movie/day?api_key={KEY}'
     response = requests.get(url)
     data = response.json()
-    genre_mapping = GENRE_MAPPING
-    for gid, name in genre_mapping.items():
-        Genre.objects.get_or_create(gid=gid, name = name)
+    # genre_mapping = GENRE_MAPPING
+    # for gid, name in genre_mapping.items():
+    #     Genre.objects.get_or_create(gid=gid, name = name)
     api_data_objects = [
         Movie(
             title=item.get('title'),
@@ -119,13 +112,28 @@ def movies(request):
         for item in data['results']
     ]
     Movie.objects.bulk_create(api_data_objects)
-    for item in data['results']:
-        genre_ids = item.get('genre_ids', [])
-        genres = Genre.objects.filter(gid__in=genre_ids)
-        movie = Movie.objects.get(title=item.get('title'))
-        movie.genre.set(genres)
+    # for item in data['results']:
+    #     genre_ids = item.get('genre_ids', [])
+    #     genres = Genre.objects.filter(gid__in=genre_ids)
+    #     movie = Movie.objects.get(title=item.get('title'))
+    #     movie.genre.set(genres)
     return render(request, 'all_movies.html', {'display_movie':display_movie})
     
+
+
+def movie_detail(request,movie_id):
+    movie= Movie.objects.get(id=movie_id)
+    
+    return render(request, 'movie_detail.html',{'movie':movie })
+
+
+
+
+
+
+
+
+
     #  def form_valid(self, form):
     #     form.instance.user= self.request.user
     #     return super().form_valid(form)

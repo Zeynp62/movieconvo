@@ -4,16 +4,18 @@
 <div class="movie-container">
   {% for movie in display_movie %}
   <div class="card">
-    <div class="card-content">
-      <h2>{{ movie.title }}</h2>
-      <img
-        src="https://image.tmdb.org/t/p/original{{ movie.poster }}"
-        alt="{{ movie.title }} poster"
-        width="400px"
-        height="300px"
-      />
-    </div>
+    <a href="{% url 'detail' movie.id %}"
+      ><div class="card-content">
+        <h2>{{ movie.title }}</h2>
+        <img
+          src="https://image.tmdb.org/t/p/original{{ movie.poster }}"
+          alt="{{ movie.title }} poster"
+          width="400px"
+          height="300px"
+        /></div
+    ></a>
   </div>
+
   {% endfor %}
 </div>
 {% endblock %}

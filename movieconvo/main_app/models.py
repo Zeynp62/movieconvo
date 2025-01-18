@@ -23,7 +23,7 @@ class Genre(models.Model):
 class Movie(models.Model):
     m_id = models.PositiveIntegerField
     title = models.CharField(max_length=180)
-    genre=models.ArrayField(models.CharField(max_length=50), size=5)
+    genre=ArrayField(models.CharField(max_length=50), size=5, default=list, blank=True)
     adult=models.BooleanField
     # rating= models.CharField(max_length=5,choices=RATINGS, default=RATINGS [0][0])
     description=models.TextField(max_length=1000)

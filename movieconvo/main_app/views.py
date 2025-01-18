@@ -114,7 +114,7 @@ def movies(request):
     # API URL and Headers
     url = 'https://api.themoviedb.org/3/discover/movie'
     headers = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MTc0MDM5ODNjM2Q3YzYxNjVmYzJjOGMzMzZjYmFmZCIsIm5iZiI6MTczNDYwNzcwOC4wMzksInN1YiI6IjY3NjQwMzVjYTBjYzNkZTY0NzAwMWM2NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.unzHuJ2Vb9kCgnFGdOnU4pwz6ypx1KiDaNuA86cIsW8',
+        'Authorization': 'Bearer',
         'accept': 'application/json'
     }
     params = {

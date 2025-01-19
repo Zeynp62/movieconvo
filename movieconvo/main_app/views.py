@@ -194,3 +194,15 @@ def signup(request):
     context={'form':form,'error_message':error_message}
     return render(request,'registration/signup.html',context)
 
+def add_to_watchlist(request, movie_id):
+    movie = Movie.objects.get(id=movie_id)
+    watchlist = request.user.watchlist
+    watchlist.movie.add(movie)
+
+    return redirect('watchlist_detail')
+
+def watchlist_detail(request):
+    watchlist = request.user.watchlist
+    movies = watchlist.movie.all()
+
+    return render(request, 'watchlist_detail.html',{'watchlist': watchlist, 'movies':movies})

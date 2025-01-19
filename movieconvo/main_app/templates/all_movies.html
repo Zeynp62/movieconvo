@@ -12,6 +12,10 @@
         width="400px"
         height="300px"
       />
+      <form method="POST" action="{% url 'add_to_watchlist' movie.id %}">
+        {% csrf_token %}
+        <button type="submit">Add to Watchlist</button>
+      </form>
     </div>
   </div>
   {% endfor %}

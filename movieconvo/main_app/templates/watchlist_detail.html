@@ -1,0 +1,24 @@
+{% extends 'base.html'%} {% block content %}
+<h1>{{user.username}}'s Watchlist</h1>
+
+{% if movies %}
+  <div>
+    {% for movie in movies %}
+    <div class="card">
+      <div>
+        <h2>{{movie.title}}</h2>
+        <img
+          src="https://image.tmdb.org/t/p/original{{ movie.poster }}"
+          alt="{{ movie.title }} poster"
+          width="400px"
+          height="300px"
+        />
+        
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p>Your watchlist is empty. Add movies to it!</p>
+    {% endif %}
+    {%endblock%}

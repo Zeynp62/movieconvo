@@ -40,10 +40,11 @@ class Movie(models.Model):
     
     
 class Watchlist(models.Model):
-    movie=models.ForeignKey(Movie, on_delete=models.CASCADE)
+    movie=models.ManyToManyField(Movie, blank=True)
     user=models.OneToOneField(User, on_delete=models.CASCADE)
     def get_absolute_url(self):
         return reverse('watchlists_detail', kwargs={'watchlist_id': self.id})
+
 
 class Review(models.Model):
     movie=models.ForeignKey(Genre, on_delete=models.CASCADE)

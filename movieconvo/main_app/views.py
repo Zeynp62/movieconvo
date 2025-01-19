@@ -114,7 +114,7 @@ def movies(request):
     # API URL and Headers
     url = 'https://api.themoviedb.org/3/discover/movie'
     headers = {
-        'Authorization': f'Bearer {token}',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MTc0MDM5ODNjM2Q3YzYxNjVmYzJjOGMzMzZjYmFmZCIsIm5iZiI6MTczNDYwNzcwOC4wMzksInN1YiI6IjY3NjQwMzVjYTBjYzNkZTY0NzAwMWM2NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.unzHuJ2Vb9kCgnFGdOnU4pwz6ypx1KiDaNuA86cIsW8',
         'accept': 'application/json'
     }
     params = {
@@ -128,13 +128,9 @@ def movies(request):
     # Fetch data from the API
     response = requests.get(url, headers=headers, params=params)
 
-    # Debugging: Print response status and content
-    print(f"API Response Status: {response.status_code}")
-    print(f"API Response Content: {response.text}")
 
     if response.status_code == 200:
         data = response.json()
-        print(f"API Data: {data}")  # Check if the data structure is as expected
 
         # Prepare data to save to the database
         api_data_objects = []
@@ -151,8 +147,6 @@ def movies(request):
             )
             api_data_objects.append(movie)
 
-        # Debugging: Print movies to be saved
-        print(f"Movies to be saved: {api_data_objects}")
 
         # Save to the database
         # if api_data_objects:
@@ -199,3 +193,4 @@ def signup(request):
     form = UserCreationForm()
     context={'form':form,'error_message':error_message}
     return render(request,'registration/signup.html',context)
+

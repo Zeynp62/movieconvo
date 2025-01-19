@@ -21,15 +21,15 @@ class Genre(models.Model):
         return reverse('genres_detail',kwargs={'pk': self.id})
 
 class Movie(models.Model):
-    m_id = models.PositiveIntegerField
+    m_id = models.PositiveIntegerField(default=0)
     title = models.CharField(max_length=180)
-    genre=ArrayField(models.CharField(max_length=50), size=5, default=list, blank=True)
-    adult=models.BooleanField
+    genre=ArrayField(models.CharField(max_length=50), size=5, default=list, blank=True, null=True)
+    adult=models.BooleanField(default=False)
     # rating= models.CharField(max_length=5,choices=RATINGS, default=RATINGS [0][0])
     description=models.TextField(max_length=1000)
     year = models.CharField(max_length=10)
     poster = models.URLField(default='images/default.jpg')
-    votes=models.FloatField
+    votes=models.FloatField(default=0.0)
     user=models.ForeignKey(User, on_delete=models.CASCADE,default=1)
 
     def __str__(self):

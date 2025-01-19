@@ -14,7 +14,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-KEY=os.getenv('API_KEY')
+token=os.getenv('TOKEN')
 
 GENRE_MAPPING = {
     28: 'Action',
@@ -114,7 +114,7 @@ def movies(request):
     # API URL and Headers
     url = 'https://api.themoviedb.org/3/discover/movie'
     headers = {
-        'Authorization': 'Bearer',
+        'Authorization': f'Bearer {token}',
         'accept': 'application/json'
     }
     params = {
@@ -128,8 +128,13 @@ def movies(request):
     # Fetch data from the API
     response = requests.get(url, headers=headers, params=params)
 
+    # Debugging: Print response status and content
+    print(f"API Response Status: {response.status_code}")
+    print(f"API Response Content: {response.text}")
+
     if response.status_code == 200:
         data = response.json()
+        print(f"API Data: {data}")  # Check if the data structure is as expected
 
         # Prepare data to save to the database
         api_data_objects = []
@@ -146,15 +151,23 @@ def movies(request):
             )
             api_data_objects.append(movie)
 
-        # Save to the database
-        Movie.objects.bulk_create(api_data_objects, ignore_conflicts=True)
+        # Debugging: Print movies to be saved
+        print(f"Movies to be saved: {api_data_objects}")
 
+        # Save to the database
+        # if api_data_objects:
+        #     Movie.objects.bulk_create(api_data_objects, ignore_conflicts=True)
+        #     print("Movies saved to the database.")
+        # else:
+        #     print("No movies to save.")
+        
         # Refresh the query to include new data
         display_movie = Movie.objects.all()
     else:
         print(f"API Error: {response.status_code} - {response.text}")  # Log error
 
     return render(request, 'all_movies.html', {'display_movie': display_movie})
+
 
 
 

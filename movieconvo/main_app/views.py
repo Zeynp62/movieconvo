@@ -9,11 +9,12 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView
 from django.http import JsonResponse
 from django.urls import reverse
+import requests
 import os 
 from dotenv import load_dotenv
 load_dotenv()
 
-KEY=os.getenv('API_KEY')
+token=os.getenv('TOKEN')
 
 GENRE_MAPPING = {
     28: 'Action',
@@ -77,31 +78,95 @@ def home(request):
 def about(request):
     return render(request,'about.html')
 
-def movies(request):
-    display_movie= Movie.objects.all()
+# def movies(request):
+#     display_movie= Movie.objects.all()
     
 
-    url = f'https://api.themoviedb.org/3/trending/movie/day?api_key={KEY}'
-    response = requests.get(url)
-    data = response.json()
-    api_data_objects = [
-        Movie(
-            title=item.get('title'),
-            # genre=item.get('genre_ids',[]),
-            rating=item.get('adult'),
-            description=item.get('overview'),
-            poster=item.get('poster_path'),
-            trailer=item.get('video'),
-        )
-        for item in data['results']
-    ]
-    Movie.objects.bulk_create(api_data_objects)
+#     url = f'https://api.themoviedb.org/3/trending/movie/day?api_key={KEY}'
+#     response = requests.get(url)
+#     data = response.json()
 
-    return render(request, 'all_movies.html', {'display_movie':display_movie})
+#     # base_url = "https://image.tmdb.org/t/p/original/"
+    
+#     api_data_objects = [
+#         Movie(
+#             title=item.get('title'),
+#             # genre=item.get('genre_ids',[]),
+#             rating=item.get('adult'),
+#             description=item.get('overview'),
+#             poster=item.get('poster_path'),
+#             trailer=item.get('video'),
+#         )
+#         for item in data['results']
+#     ]
+#     # print("hi",api_data_objects)
+#     # Movie.objects.bulk_create(api_data_objects)
+
+#     return render(request, 'all_movies.html', {'display_movie':display_movie})
     
     #  def form_valid(self, form):
     #     form.instance.user= self.request.user
     #     return super().form_valid(form)
+def movies(request):
+    # Existing movies in the database
+    display_movie = Movie.objects.all()
+
+    # API URL and Headers
+    url = 'https://api.themoviedb.org/3/discover/movie'
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'accept': 'application/json'
+    }
+    params = {
+        'include_adult': 'false',
+        'include_video': 'false',
+        'language': 'en-US',
+        'page': 1,
+        'sort_by': 'popularity.desc'
+    }
+
+    # Fetch data from the API
+    response = requests.get(url, headers=headers, params=params)
+
+    # Debugging: Print response status and content
+    print(f"API Response Status: {response.status_code}")
+    print(f"API Response Content: {response.text}")
+
+    if response.status_code == 200:
+        data = response.json()
+        print(f"API Data: {data}")  # Check if the data structure is as expected
+
+        # Prepare data to save to the database
+        api_data_objects = []
+        for item in data.get('results', []):
+            movie = Movie(
+                m_id=item.get('id'),
+                title=item.get('title'),
+                adult=item.get('adult', False),
+                description=item.get('overview'),
+                year=item.get('release_date')[:4] if item.get('release_date') else '',
+                genre=[str(genre_id) for genre_id in item.get('genre_ids', [])],
+                poster=item.get('poster_path'),
+                votes=float(item.get('vote_average', 0))
+            )
+            api_data_objects.append(movie)
+
+        # Debugging: Print movies to be saved
+        print(f"Movies to be saved: {api_data_objects}")
+
+        # Save to the database
+        # if api_data_objects:
+        #     Movie.objects.bulk_create(api_data_objects, ignore_conflicts=True)
+        #     print("Movies saved to the database.")
+        # else:
+        #     print("No movies to save.")
+        
+        # Refresh the query to include new data
+        display_movie = Movie.objects.all()
+    else:
+        print(f"API Error: {response.status_code} - {response.text}")  # Log error
+
+    return render(request, 'all_movies.html', {'display_movie': display_movie})
 
 
 
